@@ -5,8 +5,8 @@ import { ArrowRight, Eye } from 'lucide-react';
 import { getFeaturedProducts, getCategories, getTestimonials } from '@/utils/api';
 import type { Product, Category } from '@/data/products';
 import ParticleBackground from '@/components/ParticleBackground';
+import ThreeTshirt from '@/components/ThreeTshirt';
 
-// For animated heading
 const headingWords = [
   "Discover",
   "Your",
@@ -80,12 +80,12 @@ const Home = () => {
           />
           <div className="absolute inset-0 bg-gradient-to-r from-dark to-dark/60"></div>
         </div>
-        <div className="container-custom relative z-10">
+        <div className="container-custom relative z-10 flex flex-col md:flex-row items-center gap-8 md:gap-24">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className="max-w-2xl"
+            className="max-w-2xl text-center md:text-left flex-1"
           >
             <span className="inline-block bg-neon-purple bg-opacity-20 text-neon-purple px-4 py-1 rounded-full text-sm font-medium mb-6">
               New Collection 2025
@@ -94,7 +94,7 @@ const Home = () => {
             <p className="text-lg md:text-xl text-gray-300 mb-8">
               Explore our cutting-edge collection of fashion and tech. Express yourself with designs that push boundaries.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
               <Link 
                 to="/products" 
                 className="btn-primary relative neon-btn"
@@ -110,6 +110,10 @@ const Home = () => {
               </Link>
             </div>
           </motion.div>
+          {/* 3D T-shirt visual centerpiece */}
+          <div className="flex-1 flex justify-center items-center">
+            <ThreeTshirt />
+          </div>
         </div>
       </section>
 
