@@ -1,8 +1,13 @@
 
+// Enhanced dynamic/wave-like particle background with t-shirt "bubble" interaction
 import { useEffect, useRef } from "react";
 
 const PARTICLE_COUNT = 32;
 const COLORS = ["#9b87f599", "#6366f199", "#fff1", "#fff1"];
+
+// Coordinates to match the t-shirt/hero location (centered, 60% height; fine-tune as needed)
+const TSHIRT_CENTER = { x: 0.5, y: 0.61 }; // [0,1] screen percents
+const TSHIRT_RADIUS = 0.16; // relative radius of "do not enter" bubble zone
 
 interface Particle {
   x: number;
@@ -12,7 +17,7 @@ interface Particle {
   dx: number;
   dy: number;
   color: string;
-  phase: number; // for wave offset
+  phase: number; // wave offset
 }
 
 function randomBetween(a: number, b: number) {
@@ -38,16 +43,16 @@ const ParticleBackground = () => {
       .map(() => ({
         x: randomBetween(0, width),
         y: randomBetween(0, height),
-        baseY: 0, // will be set below
-        r: randomBetween(16, 42),
-        dx: randomBetween(0.025, 0.075), // wave, soft rightward movement
-        dy: randomBetween(-0.08, 0.08),
+        baseY: 0, // set below
+        r: randomBetween(16, 44),
+        dx: randomBetween(0.024, 0.08), // wave, rightward
+        dy: randomBetween(-0.06, 0.06),
         color: COLORS[Math.floor(Math.random() * COLORS.length)],
         phase: Math.random() * Math.PI * 2,
       }));
 
     // Set baseY for wave
-    particles.forEach((p, index) => {
+    particles.forEach((p) => {
       p.baseY = p.y;
     });
 
@@ -56,17 +61,32 @@ const ParticleBackground = () => {
     function draw() {
       ctx.clearRect(0, 0, width, height);
 
-      // Parallax based on mouse
-      const parallaxIntensity = 48;
+      // Parallax based on mouse (with extra depth)
+      const parallaxIntensity = 64;
       const mx = (mouseRef.current.x - 0.5) * parallaxIntensity;
-      const my = (mouseRef.current.y - 0.5) * parallaxIntensity;
+      const my = (mouseRef.current.y - 0.4) * parallaxIntensity; // slightly higher center
 
       for (const [i, p] of particles.entries()) {
-        // Wave motion: particles move right and bob on sinusoidal curve
-        p.x += p.dx;
+        // Fluid wave motion + subtle y oscillation (sin/cos mix, per-particle phase)
+        p.x += p.dx * (0.86 + 0.08 * Math.sin(i + t));
+        // Y is baseline+wave, plus extra slow undulation
         p.y =
           p.baseY +
-          Math.sin(t * 0.7 + p.phase + i) * 32; // vertical wave
+          Math.sin(t * 0.86 + p.phase + i) * 34 + // main vertical wave
+          Math.cos(t * 0.23 + i) * 18; // slower undulate
+
+        // Interactive "bubble" effect: repel softly from t-shirt area
+        const pxNorm = (p.x + mx) / width;
+        const pyNorm = (p.y + my) / height;
+        const dx = pxNorm - TSHIRT_CENTER.x;
+        const dy = pyNorm - TSHIRT_CENTER.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < TSHIRT_RADIUS) {
+          // Soft push outward
+          const pushMag = (TSHIRT_RADIUS - dist) * 166;
+          p.x += dx / (dist + 0.02) * pushMag;
+          p.y += dy / (dist + 0.02) * pushMag * 0.72;
+        }
 
         ctx.save();
         ctx.beginPath();
@@ -79,24 +99,25 @@ const ParticleBackground = () => {
           false
         );
         ctx.fillStyle = p.color;
-        ctx.globalAlpha = 0.32;
+        ctx.globalAlpha = 0.29;
         ctx.shadowColor = p.color;
         ctx.shadowBlur = 34;
         ctx.fill();
         ctx.restore();
 
-        // Loop particles from right->left edge
+        // Loop right-to-left so the flow never stops
         if (p.x > width + p.r) {
           p.x = -p.r;
           p.baseY = randomBetween(0, height);
         }
       }
-      t += 0.006;
+      t += 0.0071;
       requestAnimationFrame(draw);
     }
 
     draw();
 
+    // Responsive
     function handleResize() {
       width = window.innerWidth;
       height = window.innerHeight;
@@ -132,7 +153,7 @@ const ParticleBackground = () => {
     <canvas
       ref={canvasRef}
       className="absolute inset-0 w-full h-full z-0 pointer-events-none"
-      style={{ filter: "blur(0.5px)", background: "transparent" }}
+      style={{ filter: "blur(0.7px)", background: "transparent" }}
       aria-hidden="true"
     />
   );

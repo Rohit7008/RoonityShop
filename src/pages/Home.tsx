@@ -111,7 +111,7 @@ const Home = () => {
             </div>
           </motion.div>
           {/* 3D T-shirt visual centerpiece */}
-          <div className="flex-1 flex justify-center items-center">
+          <div className="flex-1 flex justify-center items-center pointer-events-none" style={{ zIndex: 11 }}>
             <ThreeTshirt />
           </div>
         </div>
