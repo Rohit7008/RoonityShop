@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -225,7 +224,7 @@ const Home = () => {
                         type="button"
                         onClick={(e) => {
                           e.preventDefault();
-                          setQuickViewId(product.id);
+                          setQuickViewId(Number(product.id));
                         }}
                         className="absolute top-3 left-3 p-2 bg-dark/70 backdrop-blur-sm rounded-full text-white opacity-0 group-hover:opacity-100 hover:bg-neon-purple transition-all shadow-lg"
                         aria-label="Quick View"
@@ -289,7 +288,7 @@ const Home = () => {
           </div>
         </div>
       </section>
-      {/* AnimatePresence quick view modal (future: fill in details) */}
+      {/* AnimatePresence quick view modal */}
       <AnimatePresence>
         {/* Will implement modal later based on quickViewId */}
       </AnimatePresence>
