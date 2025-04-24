@@ -8,18 +8,21 @@ const Hero = () => {
   const [mounted, setMounted] = useState(false);
   const { scrollYProgress } = useScroll();
   
-  // Transform values for cube position and movement - stop at section 2 text alignment
+  // Mobile-friendly transform values
+  const isMobile = window.innerWidth < 768;
+  
+  // Transform values for cube position and movement
   const cubeY = useTransform(scrollYProgress, 
     [0, 0.15, 0.25, 0.35],
-    ['0', '0', '5vh', '5vh']  // Stop at section 2 text alignment
+    isMobile ? ['0', '0', '10vh', '10vh'] : ['0', '0', '5vh', '5vh']
   );
   const cubeX = useTransform(scrollYProgress, 
     [0, 0.15, 0.25, 0.35],
-    ['0', '0', '25vw', '25vw']  // Stop at section 2 text alignment
+    isMobile ? ['0', '0', '0', '0'] : ['0', '0', '25vw', '25vw']
   );
   const cubeScale = useTransform(scrollYProgress, 
     [0, 0.25, 0.35],
-    [0.7, 0.65, 0.65]  // Stop scaling at section 2 text alignment
+    isMobile ? [0.5, 0.45, 0.45] : [0.7, 0.65, 0.65]
   );
   
   // Rotation for final position
@@ -90,32 +93,39 @@ const Hero = () => {
     <div className="relative bg-black overflow-hidden">
       <Navbar />
       
-      {/* Main Container - Contains all sections */}
-      <div className="relative min-h-[400vh]">
+      {/* Main Container - Responsive height */}
+      <div className="relative min-h-[300vh] md:min-h-[400vh]">
         {/* First Section - Hero with ROO NITY */}
         <section className="h-screen relative">
-          {/* Background Text Layout - Fades out during scroll */}
+          {/* Background Text Layout - Responsive padding */}
           <motion.div 
-            className="absolute inset-0 pointer-events-none flex justify-between items-center px-4"
+            className="absolute inset-0 pointer-events-none flex justify-between items-center px-4 md:px-8"
             style={{ opacity: backgroundTextOpacity }}
           >
-            {/* Left Text - ROO */}
-            <span className="font-orbitron text-[15vw] font-black text-gray-300 tracking-tighter">
+            <div className="text-[8vw] md:text-[6vw] font-orbitron text-white/10">
               ROO
-            </span>
-            
-            {/* Right Text - NITY */}
-            <span className="font-orbitron text-[15vw] font-black text-gray-300 tracking-tighter">
+            </div>
+            <div className="text-[8vw] md:text-[6vw] font-orbitron text-white/10">
               NITY
-            </span>
+            </div>
           </motion.div>
 
-          {/* Bottom Right Text */}
-          <div className="absolute bottom-8 right-8 text-gray-500 text-sm italic">
-            <p className="text-right">
-              *ESTABLISHED — 2025<br />
-              MUMBAI, INDIA*
-            </p>
+          {/* Main Content - Responsive layout */}
+          <div className="container mx-auto px-4 md:px-8 h-full flex flex-col justify-center items-center">
+            <motion.div 
+              className="text-center"
+              style={{ opacity: contentOpacity, y: contentY }}
+            >
+              <h1 className="text-4xl md:text-6xl lg:text-7xl font-orbitron text-white mb-4">
+                Welcome to RoonityShop
+              </h1>
+              <p className="text-lg md:text-xl text-gray-300 mb-8">
+                Discover our premium collection
+              </p>
+              <button className="px-6 py-3 bg-neon-purple text-white rounded-lg hover:bg-neon-purple/80 transition-colors">
+                Shop Now
+              </button>
+            </motion.div>
           </div>
         </section>
 
