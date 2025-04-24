@@ -29,7 +29,7 @@ const App = () => (
         <TooltipProvider>
           <Toaster />
           <Sonner />
-          <BrowserRouter>
+          <BrowserRouter basename={import.meta.env.BASE_URL}>
             <Routes>
               <Route path="/" element={<Hero />} />
               <Route path="/contact" element={<Contact />} />
@@ -44,7 +44,6 @@ const App = () => (
               <Route path="/returns" element={<ReturnsPage />} />
               <Route path="/product/:productId" element={<ProductDetailsPage />} />
               <Route path="/account" element={<AccountPage />} />
-              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>
