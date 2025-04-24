@@ -1,0 +1,55 @@
+/* Mobile Footer Styles */
+@media (max-width: 767px) {
+  footer {
+    padding: 2rem 1rem 1.5rem !important;
+  }
+
+  footer .grid {
+    gap: 1.5rem !important;
+  }
+
+  /* Footer logo section */
+  footer .text-2xl {
+    font-size: 1.25rem !important;
+  }
+
+  footer .space-y-4 {
+    margin-bottom: 1.5rem !important;
+  }
+
+  /* Footer links */
+  footer h3 {
+    font-size: 1rem !important;
+    margin-bottom: 0.75rem !important;
+  }
+
+  footer ul li {
+    margin-bottom: 0.5rem !important;
+  }
+
+  footer ul li a {
+    font-size: 0.875rem !important;
+  }
+
+  /* Footer social links */
+  footer .flex.space-x-4 a {
+    padding: 0.5rem !important;
+  }
+
+  /* Footer newsletter */
+  footer input[type="email"] {
+    font-size: 0.875rem !important;
+    padding: 0.5rem 0.75rem !important;
+  }
+
+  footer button[type="submit"] {
+    padding: 0.5rem 0.75rem !important;
+  }
+
+  /* Footer copyright */
+  footer .mt-8 {
+    margin-top: 1.5rem !important;
+    font-size: 0.75rem !important;
+    opacity: 0.7 !important;
+  }
+} 

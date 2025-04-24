@@ -1,0 +1,80 @@
+/* Mobile Responsive Styles Index */
+
+/* Import all mobile component styles */
+@import './navbar.css';
+@import './footer.css';
+@import './collections.css';
+@import './shop.css';
+@import './contact.css';
+@import './account.css';
+@import './product.css';
+
+/* Global mobile styles */
+@media (max-width: 767px) {
+  /* General spacing */
+  .container {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+
+  /* Typography */
+  h1 {
+    font-size: 2rem !important;
+  }
+
+  h2 {
+    font-size: 1.5rem !important;
+  }
+
+  h3 {
+    font-size: 1.25rem !important;
+  }
+
+  p {
+    font-size: 0.875rem !important;
+  }
+
+  /* Buttons */
+  button, 
+  .btn, 
+  a.btn {
+    font-size: 0.875rem !important;
+    padding: 0.5rem 1rem !important;
+  }
+
+  /* Form elements */
+  input, 
+  select, 
+  textarea {
+    font-size: 0.875rem !important;
+    padding: 0.5rem 0.75rem !important;
+  }
+
+  /* Card elements */
+  .card {
+    padding: 1rem !important;
+    border-radius: 0.5rem !important;
+  }
+
+  /* Improve touch targets */
+  button, 
+  a, 
+  input[type="checkbox"], 
+  input[type="radio"], 
+  select {
+    min-height: 44px !important;
+  }
+
+  /* Navigation focus styles */
+  a:active,
+  button:active {
+    transform: scale(0.98) !important;
+  }
+
+  /* Enhance visibility of active form elements */
+  input:focus,
+  select:focus,
+  textarea:focus {
+    box-shadow: 0 0 0 2px rgba(155, 135, 245, 0.5) !important;
+  }
+} 

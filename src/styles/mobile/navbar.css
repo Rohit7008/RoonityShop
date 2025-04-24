@@ -1,0 +1,34 @@
+/* Mobile Navbar Styles */
+@media (max-width: 767px) {
+  nav {
+    padding: 0.75rem 1rem !important;
+    backdrop-filter: blur(10px) !important;
+    background-color: rgba(0, 0, 0, 0.75) !important;
+  }
+
+  .nav-link {
+    font-size: 0.875rem !important;
+    padding: 0.5rem 0.625rem !important;
+  }
+
+  /* Mobile dropdown menu */
+  nav .dropdown-link {
+    padding: 0.75rem 1rem !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+  }
+
+  /* Add glow effect to active nav link on mobile */
+  .nav-link.active {
+    color: #9b87f5 !important;
+    text-shadow: 0 0 10px rgba(155, 135, 245, 0.5) !important;
+  }
+
+  /* Make the dropdown more visible on mobile */
+  nav .absolute.top-full {
+    background-color: rgba(0, 0, 0, 0.9) !important;
+    border: 1px solid rgba(155, 135, 245, 0.3) !important;
+    backdrop-filter: blur(15px) !important;
+    border-radius: 0.5rem !important;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5) !important;
+  }
+} 

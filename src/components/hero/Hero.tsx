@@ -3,46 +3,48 @@ import { motion, useScroll, useTransform } from 'framer-motion';
 import Navbar from '../layout/Navbar';
 import Collections from '../collections/Collections';
 import Footer from '../layout/Footer';
+import MobileHero from './MobileHero';
+import { useIsMobile } from '@/hooks/useIsMobile';
 
 const Hero = () => {
+  const isMobile = useIsMobile();
   const [mounted, setMounted] = useState(false);
   const { scrollYProgress } = useScroll();
   
-  // Mobile-friendly transform values
-  const isMobile = window.innerWidth < 768;
+  // Transform values for cube position and movement - Desktop behavior
+  const desktopCubeY = useTransform(scrollYProgress, 
+    [0, 0.15, 0.25, 0.35],
+    ['0', '0', '5vh', '5vh']
+  );
+  const desktopCubeX = useTransform(scrollYProgress, 
+    [0, 0.15, 0.25, 0.35],
+    ['0', '0', '25vw', '25vw']
+  );
   
-  // Transform values for cube position and movement
-  const cubeY = useTransform(scrollYProgress, 
-    [0, 0.15, 0.25, 0.35],
-    isMobile ? ['0', '0', '10vh', '10vh'] : ['0', '0', '5vh', '5vh']
+  // Mobile behavior - straight line movement
+  const mobileCubeY = useTransform(scrollYProgress,
+    [0, 0.15, 0.25, 0.35, 0.45],
+    ['0vh', '5vh', '10vh', '15vh', '20vh']
   );
-  const cubeX = useTransform(scrollYProgress, 
-    [0, 0.15, 0.25, 0.35],
-    isMobile ? ['0', '0', '0', '0'] : ['0', '0', '25vw', '25vw']
-  );
+  
+  // Use mobile or desktop values based on isMobile
+  const cubeY = isMobile ? mobileCubeY : desktopCubeY;
+  const cubeX = isMobile ? 0 : desktopCubeX;
+  
   const cubeScale = useTransform(scrollYProgress, 
     [0, 0.25, 0.35],
-    isMobile ? [0.5, 0.45, 0.45] : [0.7, 0.65, 0.65]
+    [isMobile ? 0.55 : 0.7, isMobile ? 0.5 : 0.65, isMobile ? 0.45 : 0.65]
   );
   
-  // Rotation for final position
-  const cubeRotateX = useTransform(scrollYProgress,
-    [0.35, 0.45, 0.55],
-    [0, 0, 0]
-  );
-  const cubeRotateY = useTransform(scrollYProgress,
-    [0.35, 0.45, 0.55],
-    [0, 0, 0]
-  );
-  const cubeRotateZ = useTransform(scrollYProgress,
-    [0.35, 0.45, 0.55],
-    [0, 0, 0]
-  );
-
   // Opacity transitions for cube - fade out after stopping
+  // For mobile, fade out when reaching about section
   const cubeFacesOpacity = useTransform(scrollYProgress,
-    [0.25, 0.30],
-    [1, 0]
+    isMobile 
+      ? [0, 0.25, 0.3, 0.35] 
+      : [0.25, 0.30],
+    isMobile 
+      ? [1, 1, 0.5, 0] 
+      : [1, 0]
   );
   
   // Logo visibility and position in About section
@@ -93,40 +95,40 @@ const Hero = () => {
     <div className="relative bg-black overflow-hidden">
       <Navbar />
       
-      {/* Main Container - Responsive height */}
-      <div className="relative min-h-[300vh] md:min-h-[400vh]">
+      {/* Main Container - Contains all sections */}
+      <div className="relative min-h-[400vh]">
         {/* First Section - Hero with ROO NITY */}
         <section className="h-screen relative">
-          {/* Background Text Layout - Responsive padding */}
-          <motion.div 
-            className="absolute inset-0 pointer-events-none flex justify-between items-center px-4 md:px-8"
-            style={{ opacity: backgroundTextOpacity }}
-          >
-            <div className="text-[8vw] md:text-[6vw] font-orbitron text-white/10">
-              ROO
-            </div>
-            <div className="text-[8vw] md:text-[6vw] font-orbitron text-white/10">
-              NITY
-            </div>
-          </motion.div>
+          {/* Mobile-specific hero (only renders on mobile) */}
+          {isMobile && <MobileHero isMobile={isMobile} />}
 
-          {/* Main Content - Responsive layout */}
-          <div className="container mx-auto px-4 md:px-8 h-full flex flex-col justify-center items-center">
+          {/* Desktop Background Text Layout - Fades out during scroll (only shown on desktop) */}
+          {!isMobile && (
             <motion.div 
-              className="text-center"
-              style={{ opacity: contentOpacity, y: contentY }}
+              className="absolute inset-0 pointer-events-none flex justify-between items-center px-4"
+              style={{ opacity: backgroundTextOpacity }}
             >
-              <h1 className="text-4xl md:text-6xl lg:text-7xl font-orbitron text-white mb-4">
-                Welcome to RoonityShop
-              </h1>
-              <p className="text-lg md:text-xl text-gray-300 mb-8">
-                Discover our premium collection
-              </p>
-              <button className="px-6 py-3 bg-neon-purple text-white rounded-lg hover:bg-neon-purple/80 transition-colors">
-                Shop Now
-              </button>
+              {/* Left Text - ROO */}
+              <span className="font-orbitron text-[15vw] font-black text-gray-300 tracking-tighter">
+                ROO
+              </span>
+              
+              {/* Right Text - NITY */}
+              <span className="font-orbitron text-[15vw] font-black text-gray-300 tracking-tighter">
+                NITY
+              </span>
             </motion.div>
-          </div>
+          )}
+
+          {/* Bottom Right Text (shown on desktop only) */}
+          {!isMobile && (
+            <div className="absolute bottom-8 right-8 text-gray-500 text-sm italic">
+              <p className="text-right">
+                *ESTABLISHED — 2025<br />
+                MUMBAI, INDIA*
+              </p>
+            </div>
+          )}
         </section>
 
         {/* Second Section - Elevate Your Streetwear Game */}
@@ -186,7 +188,7 @@ const Hero = () => {
             <div className="container mx-auto">
               <div className="max-w-6xl mx-auto flex flex-col items-center">
                 {/* Top Section with Logo and Heading */}
-                <div className="flex flex-col items-center mb-3">
+                <div className="flex flex-col items-center mb-3 relative z-20">
                   {/* Logo Image - Further reduced size */}
                   <div className="w-40 h-40 mb-3">
                     <img 
@@ -261,11 +263,11 @@ const Hero = () => {
         {/* Footer */}
         <Footer />
             
-        {/* Cube Container */}
+        {/* Cube Container - with different behavior for mobile */}
         <div className="fixed top-0 left-0 w-full h-screen flex items-center justify-center pointer-events-none">
           {mounted && (
             <motion.div 
-              className="z-20 pointer-events-auto"
+              className={`z-20 pointer-events-auto ${isMobile ? 'mobile-cube-animation' : ''}`}
               style={{
                 x: cubeX,
                 y: cubeY,

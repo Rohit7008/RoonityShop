@@ -1,0 +1,62 @@
+/* Mobile-specific styles - Only applied on mobile devices */
+
+@media (max-width: 767px) {
+  /* ROONITY text adjustment for Hero section */
+  .mobile-hero-text {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    z-index: 2 !important; 
+  }
+
+  /* Ensure cube in the main Hero component is still visible on mobile */
+  .perspective-1000 {
+    perspective: 1000px !important;
+  }
+
+  .transform-style-preserve-3d {
+    transform-style: preserve-3d !important;
+  }
+
+  /* Ensure main cube has proper positioning in mobile view */
+  .cube {
+    position: relative !important;
+    transform-style: preserve-3d !important;
+  }
+  
+  /* Mobile specific animation for cube moving in straight line */
+  .mobile-cube-animation {
+    animation: mobileCubeStraightMove 15s linear infinite !important;
+  }
+
+  @keyframes mobileCubeStraightMove {
+    0% {
+      transform: translateY(-15vh) translateX(0) translateZ(0);
+    }
+    50% {
+      transform: translateY(15vh) translateX(0) translateZ(0);
+    }
+    100% {
+      transform: translateY(-15vh) translateX(0) translateZ(0);
+    }
+  }
+  
+  /* Ensure About section appears on top of the cube for proper transition */
+  #about {
+    position: relative !important;
+    z-index: 30 !important;
+  }
+  
+  #about img {
+    position: relative !important;
+    z-index: 40 !important;
+    box-shadow: 0 0 40px rgba(57, 255, 20, 0.7) !important;
+  }
+  
+  /* Enhance cube visibility/appearance on mobile */
+  .cube-face {
+    box-shadow: inset 0 0 30px rgba(57, 255, 20, 0.6),
+                0 0 30px rgba(57, 255, 20, 0.8) !important;
+    border: 2px solid rgba(57, 255, 20, 0.9) !important;
+  }
+} 

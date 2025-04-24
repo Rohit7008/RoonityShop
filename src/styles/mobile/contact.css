@@ -1,0 +1,91 @@
+/* Mobile Contact Page Styles */
+@media (max-width: 767px) {
+  /* Contact page container */
+  .contact-container {
+    padding: 1rem !important;
+  }
+
+  /* Contact header */
+  .contact-header {
+    margin: 1rem 0 1.5rem !important;
+  }
+
+  .contact-header h1 {
+    font-size: 2rem !important;
+    text-align: center !important;
+  }
+
+  /* Contact form section */
+  .contact-form-container {
+    flex-direction: column !important;
+    gap: 2rem !important;
+  }
+
+  /* Contact info column */
+  .contact-info {
+    width: 100% !important;
+    padding: 1.5rem !important;
+    border-radius: 0.5rem !important;
+  }
+
+  .contact-info h2 {
+    font-size: 1.5rem !important;
+    margin-bottom: 1rem !important;
+  }
+
+  .contact-info p {
+    font-size: 0.875rem !important;
+    margin-bottom: 1.5rem !important;
+  }
+
+  .contact-method {
+    margin-bottom: 1rem !important;
+  }
+
+  .contact-method h3 {
+    font-size: 1rem !important;
+  }
+
+  .contact-method p {
+    font-size: 0.875rem !important;
+  }
+
+  /* Contact form column */
+  .contact-form {
+    width: 100% !important;
+    padding: 1.5rem !important;
+    border-radius: 0.5rem !important;
+  }
+
+  .contact-form h2 {
+    font-size: 1.5rem !important;
+    margin-bottom: 1rem !important;
+  }
+
+  .form-group {
+    margin-bottom: 1rem !important;
+  }
+
+  .form-group label {
+    font-size: 0.875rem !important;
+    margin-bottom: 0.25rem !important;
+  }
+
+  .form-group input,
+  .form-group textarea {
+    padding: 0.5rem 0.75rem !important;
+    font-size: 0.875rem !important;
+    border-radius: 0.25rem !important;
+  }
+
+  .form-group textarea {
+    min-height: 120px !important;
+  }
+
+  /* Form submit button */
+  .contact-form button {
+    margin-top: 1rem !important;
+    padding: 0.75rem 1rem !important;
+    font-size: 0.875rem !important;
+  }
+} 

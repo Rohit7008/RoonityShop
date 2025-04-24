@@ -1,0 +1,137 @@
+/* Mobile Account Page Styles */
+@media (max-width: 767px) {
+  /* Account page container */
+  .account-container {
+    padding: 1rem !important;
+  }
+
+  /* Account header */
+  .account-header {
+    margin: 1rem 0 1.5rem !important;
+  }
+
+  .account-header h1 {
+    font-size: 2rem !important;
+    text-align: center !important;
+  }
+
+  /* Account panels */
+  .account-panels {
+    flex-direction: column !important;
+    gap: 1.5rem !important;
+  }
+
+  /* Account navigation */
+  .account-nav {
+    width: 100% !important;
+    padding: 1rem !important;
+    border-radius: 0.5rem !important;
+    margin-bottom: 1rem !important;
+  }
+
+  .account-nav ul {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 0.5rem !important;
+  }
+
+  .account-nav ul li {
+    flex: 1 1 calc(50% - 0.5rem) !important;
+    min-width: calc(50% - 0.5rem) !important;
+  }
+
+  .account-nav-link {
+    font-size: 0.875rem !important;
+    padding: 0.5rem 0.75rem !important;
+    text-align: center !important;
+    border-radius: 0.25rem !important;
+  }
+
+  /* Account content panel */
+  .account-content {
+    width: 100% !important;
+    padding: 1rem !important;
+    border-radius: 0.5rem !important;
+  }
+
+  .account-content h2 {
+    font-size: 1.25rem !important;
+    margin-bottom: 1rem !important;
+  }
+
+  /* Profile section */
+  .profile-section {
+    gap: 1rem !important;
+  }
+
+  .profile-avatar {
+    width: 80px !important;
+    height: 80px !important;
+    border-radius: 0.5rem !important;
+  }
+
+  .profile-info h3 {
+    font-size: 1.125rem !important;
+  }
+
+  .profile-info p {
+    font-size: 0.875rem !important;
+  }
+
+  /* Form elements */
+  .account-form-group {
+    margin-bottom: 1rem !important;
+  }
+
+  .account-form-group label {
+    font-size: 0.875rem !important;
+    margin-bottom: 0.25rem !important;
+  }
+
+  .account-form-group input {
+    padding: 0.5rem 0.75rem !important;
+    font-size: 0.875rem !important;
+    border-radius: 0.25rem !important;
+  }
+
+  /* Order history */
+  .order-item {
+    padding: 0.75rem !important;
+    margin-bottom: 0.75rem !important;
+    border-radius: 0.25rem !important;
+  }
+
+  .order-header {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    margin-bottom: 0.5rem !important;
+  }
+
+  .order-header h3 {
+    font-size: 0.875rem !important;
+    margin-bottom: 0.25rem !important;
+  }
+
+  .order-details {
+    font-size: 0.75rem !important;
+  }
+
+  /* Wishlist items */
+  .wishlist-grid {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 0.75rem !important;
+  }
+
+  .wishlist-item {
+    border-radius: 0.25rem !important;
+  }
+
+  .wishlist-item-content h3 {
+    font-size: 0.875rem !important;
+    margin-bottom: 0.25rem !important;
+  }
+
+  .wishlist-item-content .price {
+    font-size: 0.875rem !important;
+  }
+} 

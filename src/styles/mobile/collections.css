@@ -1,0 +1,100 @@
+/* Mobile Collections Styles */
+@media (max-width: 767px) {
+  /* Collections section */
+  .collections-container {
+    padding: 2rem 1rem !important;
+  }
+
+  .collections-container h2 {
+    font-size: 2rem !important;
+    margin-bottom: 1.5rem !important;
+    text-align: center !important;
+  }
+
+  /* Collections grid */
+  .collections-grid {
+    grid-template-columns: 1fr !important;
+    gap: 1.5rem !important;
+  }
+
+  /* Collection card */
+  .collection-card {
+    height: 60vh !important;
+    border-radius: 0.75rem !important;
+    overflow: hidden !important;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3) !important;
+  }
+
+  .collection-card:hover {
+    transform: translateY(-5px) !important;
+    box-shadow: 0 10px 25px rgba(155, 135, 245, 0.3) !important;
+  }
+
+  /* Collection card content */
+  .collection-card-content {
+    padding: 1.5rem !important;
+  }
+
+  .collection-card-content h3 {
+    font-size: 1.5rem !important;
+    margin-bottom: 0.5rem !important;
+  }
+
+  .collection-card-content p {
+    font-size: 0.875rem !important;
+    margin-bottom: 1rem !important;
+  }
+
+  /* Collections page */
+  .collections-page-container {
+    padding: 1rem !important;
+  }
+
+  .collections-page-header {
+    margin: 1rem 0 2rem !important;
+  }
+
+  .collections-page-header h1 {
+    font-size: 2rem !important;
+    text-align: center !important;
+  }
+
+  /* Collections filter */
+  .collections-filter {
+    margin-bottom: 1.5rem !important;
+    position: relative !important;
+  }
+
+  /* Add default label for filter */
+  .collections-filter::before {
+    content: "Filter Collections" !important;
+    position: absolute !important;
+    top: -1.5rem !important;
+    left: 0 !important;
+    font-size: 0.875rem !important;
+    font-weight: 600 !important;
+    color: rgba(255, 255, 255, 0.8) !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.05em !important;
+  }
+
+  .collections-filter select {
+    width: 100% !important;
+    padding: 0.5rem 0.75rem !important;
+    font-size: 0.875rem !important;
+    background-color: rgba(0, 0, 0, 0.5) !important;
+    border: 1px solid rgba(155, 135, 245, 0.3) !important;
+    border-radius: 0.375rem !important;
+    appearance: none !important;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%239b87f5' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") !important;
+    background-repeat: no-repeat !important;
+    background-position: right 0.5rem center !important;
+    background-size: 1.25rem !important;
+    padding-right: 2rem !important;
+  }
+
+  .collections-page-grid {
+    grid-template-columns: 1fr !important;
+    gap: 2rem !important;
+  }
+} 
