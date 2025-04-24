@@ -1,25 +1,53 @@
-# Neon Cart Frontend
+# 🛍️ RoonityShop - Modern E-commerce Platform
 
-A modern e-commerce frontend built with React, Vite, and TypeScript.
+[![React](https://img.shields.io/badge/React-18.3.1-61dafb.svg?style=flat&logo=react)](https://reactjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.5.3-blue.svg?style=flat&logo=typescript)](https://www.typescriptlang.org/)
+[![Vite](https://img.shields.io/badge/Vite-5.4.1-646CFF.svg?style=flat&logo=vite)](https://vitejs.dev/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.4.11-38B2AC.svg?style=flat&logo=tailwind-css)](https://tailwindcss.com/)
+[![License](https://img.shields.io/badge/License-MIT-green.svg)](./LICENSE)
 
-## Technologies Used
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-- Framer Motion
-- React Router
-- Appwrite
+Your Premium Destination for Modern Fashion
 
-## Prerequisites
-- Node.js (v18 or higher)
-- Vercel account
-- Appwrite project setup
+## ✨ Features
 
-## Environment Variables
-Create a `.env` file in the root directory with the following variables:
+- 🎨 Modern, Dark-themed UI with Neon Accents
+- 📱 Fully Responsive Design
+- 🛒 Intuitive Shopping Experience
+- 🔍 Advanced Product Search
+- 👕 Dynamic Product Collections
+- 🎬 Smooth Animations with Framer Motion
+- 🔒 Secure Authentication with Appwrite
+- 🌐 PWA Support
+- 🖼️ 3D Product Visualization
+- 🛠️ Built with Modern Tech Stack
+
+## 🚀 Tech Stack
+
+- **Frontend Framework**: React 18 with TypeScript
+- **Styling**: Tailwind CSS + shadcn/ui
+- **Build Tool**: Vite
+- **3D Graphics**: Three.js with React Three Fiber
+- **Animations**: Framer Motion
+- **State Management**: React Query
+- **Backend & Auth**: Appwrite
+- **Form Handling**: React Hook Form + Zod
+- **Routing**: React Router DOM
+
+## 🛠️ Installation
+
+1. Clone the repository:
+```bash
+git clone https://github.com/Rohit7008/RoonityShop.git
+cd RoonityShop
 ```
+
+2. Install dependencies:
+```bash
+npm install
+```
+
+3. Create a .env file:
+```env
 VITE_APPWRITE_URL=your_appwrite_url
 VITE_APPWRITE_PROJECT_ID=your_project_id
 VITE_APPWRITE_DATABASE_ID=your_database_id
@@ -28,35 +56,59 @@ VITE_APPWRITE_BUCKET_ID=your_bucket_id
 VITE_API_URL=your_api_url
 ```
 
-## Local Development
-1. Install dependencies:
-```bash
-npm install
-```
-
-2. Start development server:
+4. Start the development server:
 ```bash
 npm run dev
 ```
 
-## Deployment to Vercel
-1. Push your code to a Git repository (GitHub, GitLab, or Bitbucket)
+## 🌟 Key Features
+
+### Modern Shopping Experience
+- Intuitive product browsing
+- Advanced filtering and search
+- Real-time product updates
+- Smooth animations and transitions
+
+### 3D Product Visualization
+- Interactive 3D product views
+- Dynamic lighting and shadows
+- Custom material configurations
+- Responsive 3D rendering
+
+### User Experience
+- Dark theme with neon accents
+- Responsive design for all devices
+- Smooth page transitions
+- Loading states and animations
+
+## 🚀 Deployment
+
+The project is configured for easy deployment on Vercel:
+
+1. Push your code to GitHub
 2. Connect your repository to Vercel
-3. Configure the following settings in Vercel:
+3. Configure build settings:
    - Framework Preset: Vite
    - Build Command: `npm run build`
    - Output Directory: `dist`
-   - Install Command: `npm install`
-4. Add all environment variables from your `.env` file
+4. Add environment variables
 5. Deploy!
 
-## Build Process
-The project uses Vite for building. The build process:
-- Compiles TypeScript to JavaScript
-- Optimizes assets
-- Generates production-ready static files
+## 🤝 Contributing
 
-## Additional Notes
-- Make sure all environment variables are properly set in Vercel
-- The `vercel.json` file is configured for client-side routing
-- The build output is in the `dist` directory
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## 📝 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 👨‍💻 Author
+
+**Rohit Kumar**
+- GitHub: [@Rohit7008](https://github.com/Rohit7008)
+
+---
+
+<div align="center">
+  <strong>⭐ Star this repo if you like it!</strong>
+</div>
