@@ -1,187 +1,203 @@
-
-import { Link } from 'react-router-dom';
-import { Instagram, Facebook, Twitter } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { Instagram, Twitter, YoutubeIcon, ChevronRight } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
 
 const Footer = () => {
-  const year = new Date().getFullYear();
+  const currentYear = new Date().getFullYear();
+  const navigate = useNavigate();
 
+  const handleLinkClick = (e: React.MouseEvent, to: string) => {
+    e.preventDefault();
+    navigate(to);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+  
   return (
-    <footer className="bg-dark-lighter pt-12 pb-6">
-      <div className="container-custom">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
-          {/* Shop */}
-          <div>
-            <h3 className="text-lg font-bold mb-4">Shop</h3>
+    <footer className="bg-black border-t border-gray-800 relative">
+      {/* Neon grid background effect */}
+      <div className="absolute inset-0 opacity-5">
+        <div className="h-full w-full" style={{
+          backgroundImage: 'linear-gradient(to right, #9b87f5 1px, transparent 1px), linear-gradient(to bottom, #9b87f5 1px, transparent 1px)',
+          backgroundSize: '2rem 2rem'
+        }}></div>
+      </div>
+      
+      {/* Footer Content */}
+      <div className="container mx-auto px-4 py-12 relative z-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
+          {/* Brand Information */}
+          <div className="space-y-4">
+            <h3 className="text-2xl font-bold text-white">ROONITY</h3>
+            <p className="text-gray-400 text-sm">
+              Bold streetwear challenging convention.<br />
+              Est. 2025 - Mumbai, India
+            </p>
+            <div className="flex items-center space-x-4">
+              <a href="https://instagram.com" className="text-gray-400 hover:text-neon-purple transition-colors">
+                <Instagram size={20} />
+              </a>
+              <a href="https://twitter.com" className="text-gray-400 hover:text-neon-purple transition-colors">
+                <Twitter size={20} />
+              </a>
+              <a href="https://youtube.com" className="text-gray-400 hover:text-neon-purple transition-colors">
+                <YoutubeIcon size={20} />
+              </a>
+            </div>
+          </div>
+
+          {/* Shop Links */}
+          <div className="space-y-4">
+            <h3 className="text-lg font-semibold text-white">Shop</h3>
             <ul className="space-y-2">
               <li>
                 <Link 
-                  to="/products" 
-                  className="text-gray-400 hover:text-neon-purple transition-colors"
+                  to="/shop" 
+                  onClick={(e) => handleLinkClick(e, '/shop')}
+                  className="text-gray-400 hover:text-neon-purple transition-colors flex items-center group"
                 >
+                  <ChevronRight className="w-4 h-4 opacity-0 -ml-4 group-hover:opacity-100 group-hover:ml-0 transition-all" />
                   All Products
                 </Link>
               </li>
               <li>
                 <Link 
-                  to="/collections/new-arrivals" 
-                  className="text-gray-400 hover:text-neon-purple transition-colors"
+                  to="/shop?type=tshirts" 
+                  onClick={(e) => handleLinkClick(e, '/shop?type=tshirts')}
+                  className="text-gray-400 hover:text-neon-purple transition-colors flex items-center group"
                 >
-                  New Arrivals
+                  <ChevronRight className="w-4 h-4 opacity-0 -ml-4 group-hover:opacity-100 group-hover:ml-0 transition-all" />
+                  T-shirts
                 </Link>
               </li>
               <li>
                 <Link 
-                  to="/collections/best-sellers" 
-                  className="text-gray-400 hover:text-neon-purple transition-colors"
+                  to="/shop?type=hoodies" 
+                  onClick={(e) => handleLinkClick(e, '/shop?type=hoodies')}
+                  className="text-gray-400 hover:text-neon-purple transition-colors flex items-center group"
                 >
-                  Best Sellers
+                  <ChevronRight className="w-4 h-4 opacity-0 -ml-4 group-hover:opacity-100 group-hover:ml-0 transition-all" />
+                  Hoodies
                 </Link>
               </li>
               <li>
                 <Link 
-                  to="/collections/sale" 
-                  className="text-gray-400 hover:text-neon-purple transition-colors"
+                  to="/shop?type=accessories" 
+                  onClick={(e) => handleLinkClick(e, '/shop?type=accessories')}
+                  className="text-gray-400 hover:text-neon-purple transition-colors flex items-center group"
                 >
-                  Sale
+                  <ChevronRight className="w-4 h-4 opacity-0 -ml-4 group-hover:opacity-100 group-hover:ml-0 transition-all" />
+                  Accessories
                 </Link>
               </li>
             </ul>
           </div>
 
-          {/* Categories */}
-          <div>
-            <h3 className="text-lg font-bold mb-4">Categories</h3>
-            <ul className="space-y-2">
-              <li>
-                <Link 
-                  to="/category/men" 
-                  className="text-gray-400 hover:text-neon-purple transition-colors"
-                >
-                  Men
-                </Link>
-              </li>
-              <li>
-                <Link 
-                  to="/category/women" 
-                  className="text-gray-400 hover:text-neon-purple transition-colors"
-                >
-                  Women
-                </Link>
-              </li>
-              <li>
-                <Link 
-                  to="/category/electronics" 
-                  className="text-gray-400 hover:text-neon-purple transition-colors"
-                >
-                  Electronics
-                </Link>
-              </li>
-              <li>
-                <Link 
-                  to="/category/home" 
-                  className="text-gray-400 hover:text-neon-purple transition-colors"
-                >
-                  Home
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          {/* Company */}
-          <div>
-            <h3 className="text-lg font-bold mb-4">Company</h3>
+          {/* Company Links */}
+          <div className="space-y-4">
+            <h3 className="text-lg font-semibold text-white">Company</h3>
             <ul className="space-y-2">
               <li>
                 <Link 
                   to="/about" 
-                  className="text-gray-400 hover:text-neon-purple transition-colors"
+                  onClick={(e) => handleLinkClick(e, '/about')}
+                  className="text-gray-400 hover:text-neon-purple transition-colors flex items-center group"
                 >
+                  <ChevronRight className="w-4 h-4 opacity-0 -ml-4 group-hover:opacity-100 group-hover:ml-0 transition-all" />
                   About Us
                 </Link>
               </li>
               <li>
                 <Link 
+                  to="/sustainability" 
+                  onClick={(e) => handleLinkClick(e, '/sustainability')}
+                  className="text-gray-400 hover:text-neon-purple transition-colors flex items-center group"
+                >
+                  <ChevronRight className="w-4 h-4 opacity-0 -ml-4 group-hover:opacity-100 group-hover:ml-0 transition-all" />
+                  Sustainability
+                </Link>
+              </li>
+              <li>
+                <Link 
+                  to="/careers" 
+                  onClick={(e) => handleLinkClick(e, '/careers')}
+                  className="text-gray-400 hover:text-neon-purple transition-colors flex items-center group"
+                >
+                  <ChevronRight className="w-4 h-4 opacity-0 -ml-4 group-hover:opacity-100 group-hover:ml-0 transition-all" />
+                  Careers
+                </Link>
+              </li>
+              <li>
+                <Link 
                   to="/contact" 
-                  className="text-gray-400 hover:text-neon-purple transition-colors"
+                  onClick={(e) => handleLinkClick(e, '/contact')}
+                  className="text-gray-400 hover:text-neon-purple transition-colors flex items-center group"
                 >
+                  <ChevronRight className="w-4 h-4 opacity-0 -ml-4 group-hover:opacity-100 group-hover:ml-0 transition-all" />
                   Contact
-                </Link>
-              </li>
-              <li>
-                <Link 
-                  to="/faq" 
-                  className="text-gray-400 hover:text-neon-purple transition-colors"
-                >
-                  FAQ
-                </Link>
-              </li>
-              <li>
-                <Link 
-                  to="/terms" 
-                  className="text-gray-400 hover:text-neon-purple transition-colors"
-                >
-                  Terms & Conditions
-                </Link>
-              </li>
-              <li>
-                <Link 
-                  to="/privacy" 
-                  className="text-gray-400 hover:text-neon-purple transition-colors"
-                >
-                  Privacy Policy
                 </Link>
               </li>
             </ul>
           </div>
 
-          {/* Newsletter */}
-          <div>
-            <h3 className="text-lg font-bold mb-4">Stay Updated</h3>
-            <p className="text-gray-400 mb-4">
-              Subscribe to our newsletter to receive updates and exclusive offers.
+          {/* Newsletter Signup */}
+          <div className="space-y-4">
+            <h3 className="text-lg font-semibold text-white">Join Our Community</h3>
+            <p className="text-gray-400 text-sm">
+              Sign up for exclusive drops and updates
             </p>
-            <form className="flex">
-              <input
-                type="email"
-                placeholder="Your email"
-                className="bg-dark border border-gray-700 rounded-l-lg py-2 px-4 focus:outline-none focus:ring-1 focus:ring-neon-purple flex-grow"
+            <div className="relative">
+              <input 
+                type="email" 
+                placeholder="Your email address" 
+                className="w-full px-4 py-2 bg-gray-900 border border-gray-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-neon-purple focus:border-transparent text-white text-sm"
               />
-              <button
-                type="submit"
-                className="bg-neon-purple hover:bg-neon-purple/90 text-white font-medium py-2 px-4 rounded-r-lg transition-colors"
-              >
+              <button className="absolute right-1 top-1 px-3 py-1 bg-neon-purple text-black rounded-md text-sm font-medium hover:bg-neon-purple/90 transition-colors">
                 Subscribe
               </button>
-            </form>
+            </div>
           </div>
         </div>
 
-        <div className="border-t border-gray-800 pt-6">
-          <div className="flex flex-col md:flex-row items-center justify-between">
-            {/* Logo */}
-            <Link to="/" className="mb-4 md:mb-0">
-              <span className="text-xl font-bold bg-gradient-to-r from-neon-purple to-neon-blue bg-clip-text text-transparent">
-                NeonShop
-              </span>
+        {/* Bottom Bar */}
+        <div className="mt-12 pt-6 border-t border-gray-800 flex flex-col md:flex-row justify-between items-center">
+          <motion.p 
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            className="text-gray-500 text-sm"
+          >
+            © {currentYear} ROONITY. All rights reserved.
+          </motion.p>
+          
+          <div className="flex flex-wrap justify-center mt-4 md:mt-0 gap-4">
+            <Link 
+              to="/terms" 
+              onClick={(e) => handleLinkClick(e, '/terms')}
+              className="text-gray-500 hover:text-neon-purple text-sm transition-colors"
+            >
+              Terms of Service
             </Link>
-
-            {/* Social Icons */}
-            <div className="flex space-x-4 mb-4 md:mb-0">
-              <a href="#" className="text-gray-400 hover:text-neon-purple transition-colors" aria-label="Instagram">
-                <Instagram size={20} />
-              </a>
-              <a href="#" className="text-gray-400 hover:text-neon-purple transition-colors" aria-label="Facebook">
-                <Facebook size={20} />
-              </a>
-              <a href="#" className="text-gray-400 hover:text-neon-purple transition-colors" aria-label="Twitter">
-                <Twitter size={20} />
-              </a>
-            </div>
-
-            {/* Copyright */}
-            <div className="text-sm text-gray-500">
-              © {year} NeonShop. All rights reserved.
-            </div>
+            <Link 
+              to="/privacy" 
+              onClick={(e) => handleLinkClick(e, '/privacy')}
+              className="text-gray-500 hover:text-neon-purple text-sm transition-colors"
+            >
+              Privacy Policy
+            </Link>
+            <Link 
+              to="/shipping" 
+              onClick={(e) => handleLinkClick(e, '/shipping')}
+              className="text-gray-500 hover:text-neon-purple text-sm transition-colors"
+            >
+              Shipping Info
+            </Link>
+            <Link 
+              to="/returns" 
+              onClick={(e) => handleLinkClick(e, '/returns')}
+              className="text-gray-500 hover:text-neon-purple text-sm transition-colors"
+            >
+              Returns & Exchanges
+            </Link>
           </div>
         </div>
       </div>
