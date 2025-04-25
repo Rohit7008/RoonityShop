@@ -43,8 +43,8 @@ const Collections = () => {
   const navigate = useNavigate();
   useScrollToTop();
 
-  const handleCardClick = (slug: string) => {
-    navigate(`/collections/${slug}`);
+  const handleCardClick = () => {
+    navigate('/collections');
   };
 
   const handleShopNowClick = (e: React.MouseEvent) => {
@@ -95,7 +95,7 @@ const Collections = () => {
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
               className="group cursor-pointer"
-              onClick={() => handleCardClick(collection.slug)}
+              onClick={handleCardClick}
             >
               <div className="relative overflow-hidden rounded-lg glassmorphism-card group-hover:shadow-[0_0_30px_rgba(155,135,245,0.3)] transition-all duration-300">
                 {/* Collection Image */}

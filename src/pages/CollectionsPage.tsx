@@ -100,17 +100,23 @@ const CollectionsPage = () => {
     const typeParam = params.get('type');
     const statusParam = params.get('status');
     
+    // Reset filters first to avoid duplications
+    setActiveFilters({
+      type: [],
+      status: []
+    });
+    
     if (typeParam && ['tshirts', 'hoodies', 'accessories'].includes(typeParam)) {
       setActiveFilters(prev => ({
         ...prev,
-        type: [...prev.type, typeParam]
+        type: [typeParam] // Use a single item array instead of spreading
       }));
     }
 
     if (statusParam && ['new', 'bestsellers'].includes(statusParam)) {
       setActiveFilters(prev => ({
         ...prev,
-        status: [...prev.status, statusParam]
+        status: [statusParam] // Use a single item array instead of spreading
       }));
     }
   }, [location.search]);
@@ -120,15 +126,12 @@ const CollectionsPage = () => {
     let newFilters: string[];
     
     if (activeFilters[category].includes(filter)) {
+      // If filter already exists, remove it
       newFilters = activeFilters[category].filter(f => f !== filter);
     } else {
-      // Check if we should reset other filters in the same category (for exclusivity)
-      if (category === 'type') {
-        newFilters = [...activeFilters[category], filter];
-      } else {
-        // For status filters, allow toggling multiple or reset to new selection
-        newFilters = [...activeFilters[category], filter];
-      }
+      // If filter doesn't exist, add it, ensuring no duplicates with Set
+      const uniqueFilters = new Set([...activeFilters[category], filter]);
+      newFilters = Array.from(uniqueFilters);
     }
     
     setActiveFilters(prev => ({
@@ -608,48 +611,51 @@ const CollectionsPage = () => {
               </div>
             </div>
 
-            {/* Active Filters Display - Only on mobile */}
+            {/* Active Filters Display */}
             {(activeFilters.type.length > 0 || activeFilters.status.length > 0) && (
               <motion.div 
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="md:hidden flex flex-wrap items-center gap-2 mt-4"
+                className="flex flex-wrap items-center gap-2 mt-4 bg-gray-900/30 backdrop-blur-sm p-3 rounded-lg border border-gray-800/50"
               >
-                <span className="text-gray-400 text-sm">Active filters:</span>
-                {[...activeFilters.type, ...activeFilters.status].map(filter => (
-                  <motion.span
-                    key={filter}
-                    initial={{ scale: 0 }}
-                    animate={{ scale: 1 }}
-                    exit={{ scale: 0 }}
-                    className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-gray-800/50 text-white border border-gray-700"
-                  >
-                    {filter === 'tshirts' ? 'T-shirts' :
-                     filter === 'hoodies' ? 'Hoodies' :
-                     filter === 'accessories' ? 'Accessories' :
-                     filter === 'new' ? 'New Arrivals' :
-                     filter === 'bestsellers' ? 'Bestsellers' : filter}
-                    <motion.button
-                      whileHover={{ scale: 1.1 }}
-                      whileTap={{ scale: 0.9 }}
-                      onClick={() => toggleFilter(filter, filter === 'new' || filter === 'bestsellers' ? 'status' : 'type')}
-                      className="ml-2 text-gray-400 hover:text-white"
+                <span className="text-gray-300 text-sm font-medium mr-1">Active filters:</span>
+                <div className="flex flex-wrap gap-2">
+                  {/* Create a unique array of filters to prevent duplications */}
+                  {Array.from(new Set([...activeFilters.type, ...activeFilters.status])).map(filter => (
+                    <motion.span
+                      key={filter}
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      exit={{ scale: 0 }}
+                      className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-gray-800/80 text-white border border-neon-purple/30 shadow-sm"
                     >
-                      ×
-                    </motion.button>
-                  </motion.span>
-                ))}
-                <motion.button
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  onClick={() => {
-                    setActiveFilters({ type: [], status: [] });
-                    navigate('/collections', { replace: true });
-                  }}
-                  className="text-neon-purple hover:text-neon-purple/80 text-sm font-medium"
-                >
-                  Clear all
-                </motion.button>
+                      {filter === 'tshirts' ? 'T-shirts' :
+                       filter === 'hoodies' ? 'Hoodies' :
+                       filter === 'accessories' ? 'Accessories' :
+                       filter === 'new' ? 'New Arrivals' :
+                       filter === 'bestsellers' ? 'Bestsellers' : filter}
+                      <motion.button
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.9 }}
+                        onClick={() => toggleFilter(filter, filter === 'new' || filter === 'bestsellers' ? 'status' : 'type')}
+                        className="ml-2 text-neon-purple hover:text-white transition-colors"
+                      >
+                        ×
+                      </motion.button>
+                    </motion.span>
+                  ))}
+                  <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={() => {
+                      setActiveFilters({ type: [], status: [] });
+                      navigate('/collections', { replace: true });
+                    }}
+                    className="text-neon-purple hover:bg-gray-800/50 text-sm font-medium px-3 py-1 rounded-full border border-neon-purple/30 transition-all"
+                  >
+                    Clear all
+                  </motion.button>
+                </div>
               </motion.div>
             )}
           </div>

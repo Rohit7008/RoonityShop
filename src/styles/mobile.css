@@ -22,6 +22,14 @@
   .cube {
     position: relative !important;
     transform-style: preserve-3d !important;
+    opacity: 1;
+    transition: opacity 0.15s ease-out;
+  }
+  
+  /* Hide cube when it intersects with about section */
+  .cube.fade-out {
+    opacity: 0;
+    pointer-events: none;
   }
   
   /* Mobile specific animation for cube moving in straight line */
@@ -32,12 +40,35 @@
   @keyframes mobileCubeStraightMove {
     0% {
       transform: translateY(-15vh) translateX(0) translateZ(0);
+      opacity: 1;
     }
-    50% {
-      transform: translateY(15vh) translateX(0) translateZ(0);
+    25% {
+      transform: translateY(-8vh) translateX(0) translateZ(0);
+      opacity: 1;
+    }
+    28% {
+      transform: translateY(-6vh) translateX(0) translateZ(0);
+      opacity: 0.7;
+    }
+    30% {
+      transform: translateY(-4vh) translateX(0) translateZ(0);
+      opacity: 0.3;
+    }
+    32% {
+      transform: translateY(-2vh) translateX(0) translateZ(0);
+      opacity: 0;
+    }
+    85% {
+      transform: translateY(-12vh) translateX(0) translateZ(0);
+      opacity: 0;
+    }
+    92% {
+      transform: translateY(-14vh) translateX(0) translateZ(0);
+      opacity: 0.7;
     }
     100% {
       transform: translateY(-15vh) translateX(0) translateZ(0);
+      opacity: 1;
     }
   }
   
@@ -45,6 +76,7 @@
   #about {
     position: relative !important;
     z-index: 30 !important;
+    margin-bottom: 80px !important; /* Add space after the about section */
   }
   
   #about img {
@@ -53,10 +85,35 @@
     box-shadow: 0 0 40px rgba(57, 255, 20, 0.7) !important;
   }
   
+  /* Add space between About and Collections sections */
+  #about + section {
+    margin-top: 60px !important;
+    padding-top: 60px !important;
+  }
+
+  /* Make the button more prominent */
+  #about a {
+    position: relative !important;
+    z-index: 50 !important;
+    display: inline-flex !important;
+    margin-bottom: 30px !important;
+  }
+  
   /* Enhance cube visibility/appearance on mobile */
   .cube-face {
     box-shadow: inset 0 0 30px rgba(57, 255, 20, 0.6),
                 0 0 30px rgba(57, 255, 20, 0.8) !important;
     border: 2px solid rgba(57, 255, 20, 0.9) !important;
+  }
+
+  /* Intersection Observer trigger area */
+  .cube-trigger {
+    position: absolute;
+    top: 70vh;
+    left: 0;
+    right: 0;
+    height: 1px;
+    opacity: 0;
+    pointer-events: none;
   }
 } 

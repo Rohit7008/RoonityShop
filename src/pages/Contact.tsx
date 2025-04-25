@@ -217,7 +217,7 @@ const Contact = () => {
                     ></textarea>
                   </div>
                   
-                  <div className="flex justify-end">
+                  <div className="flex justify-center md:justify-end">
                     <button
                       type="submit"
                       className="flex items-center gap-2 px-6 py-3 bg-neon-purple text-black rounded-lg font-medium hover:bg-neon-purple/90 transition-all shadow-lg shadow-neon-purple/20 hover:shadow-neon-purple/40"

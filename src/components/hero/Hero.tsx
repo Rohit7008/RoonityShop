@@ -190,7 +190,7 @@ const Hero = () => {
                 {/* Top Section with Logo and Heading */}
                 <div className="flex flex-col items-center mb-3 relative z-20">
                   {/* Logo Image - Further reduced size */}
-                  <div className="w-40 h-40 mb-3">
+                  <div className="w-28 h-28 md:w-40 md:h-40 mb-3">
                     <img 
                       src="/mockups/mockup-1.png" 
                       alt="ROONITY Logo" 
@@ -199,7 +199,7 @@ const Hero = () => {
                   </div>
 
                   {/* Heading */}
-                  <h2 className="text-4xl md:text-5xl font-bold text-white text-center mb-3">
+                  <h2 className="text-3xl md:text-5xl font-bold text-white text-center mb-3">
                     ROONITY: Designed to Disrupt
                   </h2>
                 </div>
@@ -207,7 +207,7 @@ const Hero = () => {
                 {/* Content Grid - Tightened spacing */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-16 gap-y-3 mb-4">
                   {/* Left Column */}
-                  <div className="text-base lg:text-lg text-gray-300 leading-relaxed">
+                  <div className="text-sm md:text-base lg:text-lg text-gray-300 leading-relaxed">
                     <p className="mb-2">
                       Born in Mumbai, 2025 — ROONITY exists at the edge of streetwear and self-expression. We don't follow trends. We build statements.
                     </p>
@@ -222,7 +222,7 @@ const Hero = () => {
                   </div>
                   
                   {/* Right Column */}
-                  <div className="text-base lg:text-lg text-gray-300 leading-relaxed">
+                  <div className="text-sm md:text-base lg:text-lg text-gray-300 leading-relaxed">
                     <p className="mb-2">
                       We collaborate with creators, challenge fast fashion, and stay rooted in community.
                     </p>
@@ -233,18 +233,18 @@ const Hero = () => {
                     
                     <div>
                       <h3 className="text-xl font-bold text-white mb-1">👉 Join the Movement</h3>
-                      <p className="text-xl lg:text-2xl text-gray-300 italic">
+                      <p className="text-lg lg:text-2xl text-gray-300 italic">
                         Drop in. Stand out. Wear ROONITY.
                       </p>
                     </div>
                   </div>
                 </div>
                 
-                {/* CTA Button - Minimal spacing */}
-                <div className="flex justify-center mt-2">
+                {/* CTA Button - Improved mobile visibility */}
+                <div className="flex justify-center mt-6 mb-16 sm:mb-8 md:mb-2 relative z-30">
                   <a 
                     href="/about" 
-                    className="inline-flex items-center px-6 py-2 border-2 border-neon-purple rounded-full font-medium text-neon-purple hover:bg-neon-purple/10 transition-all duration-300"
+                    className="inline-flex items-center px-6 py-3 md:py-2 border-2 border-neon-purple rounded-full font-medium text-neon-purple hover:bg-neon-purple/10 transition-all duration-300 shadow-lg shadow-neon-purple/20"
                   >
                     <span>Our Full Story</span>
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-2" viewBox="0 0 20 20" fill="currentColor">
