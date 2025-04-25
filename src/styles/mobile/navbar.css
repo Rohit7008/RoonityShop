@@ -6,6 +6,45 @@
     background-color: rgba(0, 0, 0, 0.75) !important;
   }
 
+  /* Hamburger menu button */
+  nav button[aria-label="Open menu"],
+  nav button[aria-label="Close menu"] {
+    border-radius: 0.5rem !important;
+    transition: all 0.3s ease !important;
+  }
+
+  nav button[aria-label="Open menu"]:hover,
+  nav button[aria-label="Close menu"]:hover {
+    background-color: rgba(155, 135, 245, 0.1) !important;
+    transform: scale(1.05) !important;
+  }
+
+  nav button[aria-label="Close menu"] {
+    color: #9b87f5 !important;
+  }
+
+  /* Mobile menu overlay */
+  .fixed.inset-0.top-20 {
+    overflow-y: auto !important;
+    padding-bottom: 6rem !important;
+  }
+
+  /* Add neon glow effect to mobile menu items on hover */
+  .fixed.inset-0.top-20 a:hover {
+    text-shadow: 0 0 10px rgba(155, 135, 245, 0.7) !important;
+  }
+
+  /* Animate mobile menu items */
+  .fixed.inset-0.top-20 a, 
+  .fixed.inset-0.top-20 .space-y-3 {
+    transition: transform 0.3s ease, color 0.3s ease !important;
+  }
+
+  .fixed.inset-0.top-20 a:hover {
+    transform: translateX(5px) !important;
+  }
+
+  /* Nav links */
   .nav-link {
     font-size: 0.875rem !important;
     padding: 0.5rem 0.625rem !important;
