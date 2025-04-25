@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { ArrowRight, Filter, ChevronDown, ChevronUp, ShoppingBag } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ArrowRight, Filter, ChevronDown, ChevronUp, ShoppingBag, ArrowUpDown } from 'lucide-react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
@@ -23,29 +23,36 @@ const ShopPage = () => {
   const navigate = useNavigate();
   const [activeFilters, setActiveFilters] = useState<{
     type: string[];
-    collection: string[];
+    status: string[];
   }>({
     type: [],
-    collection: []
+    status: []
   });
   const [filterMenuOpen, setFilterMenuOpen] = useState(false);
-  const [sortOrder, setSortOrder] = useState('random');
+  const [sortOrder, setSortOrder] = useState('featured');
+  const [sortMenuOpen, setSortMenuOpen] = useState(false);
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
   const [allProducts, setAllProducts] = useState<Product[]>([]);
+  const [filterType, setFilterType] = useState<'type' | 'status'>('type');
   
   // Parse URL query parameters
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const typeParam = params.get('type');
+    const statusParam = params.get('status');
     
     if (typeParam && ['tshirts', 'hoodies', 'accessories'].includes(typeParam)) {
-      // Set active filters based on URL parameters
-      if (!activeFilters.type.includes(typeParam)) {
-        setActiveFilters(prev => ({
-          ...prev,
-          type: [...prev.type, typeParam]
-        }));
-      }
+      setActiveFilters(prev => ({
+        ...prev,
+        type: [...prev.type, typeParam]
+      }));
+    }
+
+    if (statusParam && ['new', 'bestsellers'].includes(statusParam)) {
+      setActiveFilters(prev => ({
+        ...prev,
+        status: [...prev.status, statusParam]
+      }));
     }
   }, [location.search]);
 
@@ -67,7 +74,7 @@ const ShopPage = () => {
         id: 2,
         name: "URBAN MIRAGE",
         items: [
-          { id: 201, name: "Holographic Windbreaker", price: "$119.99", image: "https://images.unsplash.com/photo-1564557287817-3785e38ec1f5?auto=format&fit=crop&w=800&q=80", isNew: true, type: 'hoodies' },
+          { id: 201, name: "Holographic Windbreaker", price: "$119.99", image: "https://images.unsplash.com/photo-1564557287817-3785e3842f2b?auto=format&fit=crop&w=800&q=80", isNew: true, type: 'hoodies' },
           { id: 202, name: "Mirage Oversized Tee", price: "$49.99", image: "https://images.unsplash.com/photo-1529139574466-a303027c1d8b?auto=format&fit=crop&w=800&q=80", type: 'tshirts' },
           { id: 203, name: "Digital Dissolve Joggers", price: "$89.99", image: "https://images.unsplash.com/photo-1552902865-b72c031ac5ea?auto=format&fit=crop&w=800&q=80", isBestseller: true, type: 'accessories' },
           { id: 204, name: "Illusion Bucket Hat", price: "$39.99", image: "https://images.unsplash.com/photo-1556306535-0f09a537f0a3?auto=format&fit=crop&w=800&q=80", type: 'accessories' },
@@ -111,36 +118,36 @@ const ShopPage = () => {
   }, []);
 
   // Toggles a filter in the active filters array and updates URL
-  const toggleFilter = (filter: string) => {
+  const toggleFilter = (filter: string, category: 'type' | 'status') => {
     let newFilters: string[];
     
-    if (activeFilters.type.includes(filter)) {
-      newFilters = activeFilters.type.filter(f => f !== filter);
+    if (activeFilters[category].includes(filter)) {
+      newFilters = activeFilters[category].filter(f => f !== filter);
     } else {
-      newFilters = [...activeFilters.type, filter];
+      // Check if we should reset other filters in the same category (for exclusivity)
+      if (category === 'type') {
+        newFilters = [...activeFilters[category], filter];
+      } else {
+        // For status filters, allow toggling multiple or reset to new selection
+        newFilters = [...activeFilters[category], filter];
+      }
     }
     
     setActiveFilters(prev => ({
       ...prev,
-      type: newFilters
+      [category]: newFilters
     }));
     
-    // Update URL query parameters for product type filters
-    if (['tshirts', 'hoodies', 'accessories'].includes(filter)) {
-      const params = new URLSearchParams(location.search);
-      
-      if (newFilters.some(f => ['tshirts', 'hoodies', 'accessories'].includes(f))) {
-        // Find the first product type filter
-        const typeFilter = newFilters.find(f => ['tshirts', 'hoodies', 'accessories'].includes(f));
-        if (typeFilter) {
-          params.set('type', typeFilter);
-        }
-      } else {
-        params.delete('type');
-      }
-      
-      navigate({ search: params.toString() }, { replace: true });
+    // Update URL query parameters
+    const params = new URLSearchParams(location.search);
+    
+    if (newFilters.length > 0) {
+      params.set(category, newFilters[0]); // Set first filter as URL param
+    } else {
+      params.delete(category);
     }
+    
+    navigate({ search: params.toString() }, { replace: true });
   };
 
   // Filter and sort products based on active filters and sort order
@@ -150,28 +157,19 @@ const ShopPage = () => {
     let filtered = [...allProducts];
 
     // Apply type filters
-    const typeFilters = ['tshirts', 'hoodies', 'accessories'].filter(type => 
-      activeFilters.type.includes(type)
-    );
-    
-    if (typeFilters.length > 0) {
-      filtered = filtered.filter(product => typeFilters.includes(product.type));
+    if (activeFilters.type.length > 0) {
+      filtered = filtered.filter(product => activeFilters.type.includes(product.type));
     }
 
     // Apply status filters
-    const statusFilters = ['new', 'bestsellers'].filter(status => 
-      activeFilters.type.includes(status)
-    );
-
-    if (statusFilters.length > 0) {
+    if (activeFilters.status.length > 0) {
       filtered = filtered.filter(product => 
-        (statusFilters.includes('new') && product.isNew) || 
-        (statusFilters.includes('bestsellers') && product.isBestseller)
+        (activeFilters.status.includes('new') && product.isNew) || 
+        (activeFilters.status.includes('bestsellers') && product.isBestseller)
       );
     }
 
     // Apply sorting
-    if (sortOrder !== 'random') {
       filtered.sort((a, b) => {
         switch (sortOrder) {
           case 'price-low':
@@ -184,10 +182,6 @@ const ShopPage = () => {
             return 0;
         }
       });
-    } else {
-      // Re-randomize if random is selected
-      filtered = filtered.sort(() => Math.random() - 0.5);
-    }
 
     setFilteredProducts(filtered);
   }, [activeFilters, sortOrder, allProducts]);
@@ -223,7 +217,7 @@ const ShopPage = () => {
               transition={{ duration: 0.5 }}
               className="text-5xl md:text-6xl font-bold text-white text-center mb-4"
             >
-              Shop All
+              Shop
             </motion.h1>
             
             <motion.p 
@@ -232,161 +226,344 @@ const ShopPage = () => {
               transition={{ duration: 0.5, delay: 0.2 }}
               className="text-gray-400 text-center max-w-2xl mx-auto mb-16"
             >
-              Browse our complete catalog of digital-age streetwear
+              Explore our curated collection of digital-age streetwear
             </motion.p>
             
-            {/* Filter and Sort Controls */}
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
-              {/* Filter Button - Mobile */}
+            {/* Filter Section */}
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-6">
+              {/* Mobile Filter Button */}
               <div className="md:hidden w-full">
-                <button 
+                <motion.button 
                   onClick={() => setFilterMenuOpen(!filterMenuOpen)}
-                  className="flex items-center justify-between w-full px-4 py-2 bg-gray-900 rounded-lg"
+                  className="flex items-center justify-between w-full px-4 py-3 bg-gray-900/50 backdrop-blur-sm rounded-lg border border-gray-800"
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
                 >
-                  <span className="flex items-center">
+                  <span className="flex items-center text-white">
                     <Filter size={18} className="mr-2" />
-                    Filters {activeFilters.type.length > 0 && `(${activeFilters.type.length})`}
+                    Filters {(activeFilters.type.length + activeFilters.status.length) > 0 && 
+                      `(${activeFilters.type.length + activeFilters.status.length})`}
                   </span>
-                  {filterMenuOpen ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
-                </button>
+                  <motion.span
+                    animate={{ rotate: filterMenuOpen ? 180 : 0 }}
+                    transition={{ type: "spring", stiffness: 200, damping: 15 }}
+                  >
+                    <ChevronDown size={18} className="text-gray-400" />
+                  </motion.span>
+                </motion.button>
                 
                 {/* Mobile Filter Menu */}
-                {filterMenuOpen && (
-                  <div className="mt-2 p-4 bg-gray-900 rounded-lg">
-                    <div className="mb-4">
-                      <h3 className="text-white font-medium mb-2">Product Type</h3>
-                      <div className="space-y-2">
-                        <label className="flex items-center text-gray-300">
-                          <input 
-                            type="checkbox" 
-                            className="mr-2 accent-neon-purple" 
-                            onChange={() => toggleFilter('tshirts')}
-                            checked={activeFilters.type.includes('tshirts')}
-                          />
-                          T-shirts <span className="ml-1 text-gray-500">({productCounts.tshirts})</span>
-                        </label>
-                        <label className="flex items-center text-gray-300">
-                          <input 
-                            type="checkbox" 
-                            className="mr-2 accent-neon-purple" 
-                            onChange={() => toggleFilter('hoodies')}
-                            checked={activeFilters.type.includes('hoodies')}
-                          />
-                          Hoodies <span className="ml-1 text-gray-500">({productCounts.hoodies})</span>
-                        </label>
-                        <label className="flex items-center text-gray-300">
-                          <input 
-                            type="checkbox" 
-                            className="mr-2 accent-neon-purple" 
-                            onChange={() => toggleFilter('accessories')}
-                            checked={activeFilters.type.includes('accessories')}
-                          />
-                          Accessories <span className="ml-1 text-gray-500">({productCounts.accessories})</span>
-                        </label>
-                      </div>
+                <motion.div 
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ 
+                    opacity: filterMenuOpen ? 1 : 0,
+                    height: filterMenuOpen ? "auto" : 0
+                  }}
+                  transition={{ type: "spring", stiffness: 200, damping: 20 }}
+                  className="overflow-hidden"
+                >
+                  <div className="mt-4 p-4 bg-gray-900/50 backdrop-blur-sm rounded-lg border border-gray-800">
+                    {/* Filter Type Selector */}
+                    <div className="flex gap-2 mb-4">
+                      <motion.button
+                        onClick={() => setFilterType('type')}
+                        className={`flex-1 py-2 px-4 rounded-lg text-sm font-medium transition-colors ${
+                          filterType === 'type' 
+                            ? 'bg-neon-purple text-black' 
+                            : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
+                        }`}
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                      >
+                        Product Type
+                      </motion.button>
+                      <motion.button
+                        onClick={() => setFilterType('status')}
+                        className={`flex-1 py-2 px-4 rounded-lg text-sm font-medium transition-colors ${
+                          filterType === 'status' 
+                            ? 'bg-neon-purple text-black' 
+                            : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
+                        }`}
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                      >
+                        Status
+                      </motion.button>
                     </div>
                     
-                    <div>
-                      <h3 className="text-white font-medium mb-2">Status</h3>
-                      <div className="space-y-2">
-                        <label className="flex items-center text-gray-300">
+                    {/* Filter Options */}
+                    <motion.div
+                      initial={false}
+                      animate={{ opacity: 1 }}
+                      transition={{ duration: 0.2 }}
+                    >
+                      {filterType === 'type' ? (
+                        <div className="space-y-3">
+                          {[
+                            { id: 'tshirts', label: 'T-shirts', count: productCounts.tshirts },
+                            { id: 'hoodies', label: 'Hoodies', count: productCounts.hoodies },
+                            { id: 'accessories', label: 'Accessories', count: productCounts.accessories }
+                          ].map(item => (
+                            <label key={item.id} className="flex items-center justify-between p-2 rounded-lg hover:bg-gray-800/50 cursor-pointer group">
+                              <div className="flex items-center">
+                                <motion.div
+                                  initial={false}
+                                  animate={{
+                                    background: activeFilters.type.includes(item.id) ? '#9b87f5' : 'transparent',
+                                    borderColor: activeFilters.type.includes(item.id) ? '#9b87f5' : '#4a4a4a'
+                                  }}
+                                  className="w-5 h-5 border-2 rounded-md mr-3 flex items-center justify-center"
+                                >
+                                  {activeFilters.type.includes(item.id) && (
+                                    <motion.svg
+                                      initial={{ scale: 0 }}
+                                      animate={{ scale: 1 }}
+                                      className="w-3 h-3 text-black"
+                                      viewBox="0 0 24 24"
+                                      fill="none"
+                                      stroke="currentColor"
+                                      strokeWidth="3"
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                    >
+                                      <polyline points="20 6 9 17 4 12" />
+                                    </motion.svg>
+                                  )}
+                                </motion.div>
+                                <span className="text-gray-300 group-hover:text-white transition-colors">
+                                  {item.label}
+                                </span>
+                              </div>
+                              <span className="text-gray-500 text-sm">
+                                ({item.count})
+                              </span>
                           <input 
                             type="checkbox" 
-                            className="mr-2 accent-neon-purple" 
-                            onChange={() => toggleFilter('new')}
-                            checked={activeFilters.type.includes('new')}
+                                className="hidden"
+                                checked={activeFilters.type.includes(item.id)}
+                                onChange={() => toggleFilter(item.id, 'type')}
                           />
-                          New Arrivals <span className="ml-1 text-gray-500">({productCounts.new})</span>
                         </label>
-                        <label className="flex items-center text-gray-300">
+                          ))}
+                        </div>
+                      ) : (
+                        <div className="space-y-3">
+                          {[
+                            { id: 'new', label: 'New Arrivals', count: productCounts.new },
+                            { id: 'bestsellers', label: 'Bestsellers', count: productCounts.bestsellers }
+                          ].map(item => (
+                            <label key={item.id} className="flex items-center justify-between p-2 rounded-lg hover:bg-gray-800/50 cursor-pointer group">
+                              <div className="flex items-center">
+                                <motion.div
+                                  initial={false}
+                                  animate={{
+                                    background: activeFilters.status.includes(item.id) ? '#9b87f5' : 'transparent',
+                                    borderColor: activeFilters.status.includes(item.id) ? '#9b87f5' : '#4a4a4a'
+                                  }}
+                                  className="w-5 h-5 border-2 rounded-md mr-3 flex items-center justify-center"
+                                >
+                                  {activeFilters.status.includes(item.id) && (
+                                    <motion.svg
+                                      initial={{ scale: 0 }}
+                                      animate={{ scale: 1 }}
+                                      className="w-3 h-3 text-black"
+                                      viewBox="0 0 24 24"
+                                      fill="none"
+                                      stroke="currentColor"
+                                      strokeWidth="3"
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                    >
+                                      <polyline points="20 6 9 17 4 12" />
+                                    </motion.svg>
+                                  )}
+                                </motion.div>
+                                <span className="text-gray-300 group-hover:text-white transition-colors">
+                                  {item.label}
+                                </span>
+                              </div>
+                              <span className="text-gray-500 text-sm">
+                                ({item.count})
+                              </span>
                           <input 
                             type="checkbox" 
-                            className="mr-2 accent-neon-purple" 
-                            onChange={() => toggleFilter('bestsellers')}
-                            checked={activeFilters.type.includes('bestsellers')}
+                                className="hidden"
+                                checked={activeFilters.status.includes(item.id)}
+                                onChange={() => toggleFilter(item.id, 'status')}
                           />
-                          Bestsellers <span className="ml-1 text-gray-500">({productCounts.bestsellers})</span>
                         </label>
+                          ))}
                       </div>
-                    </div>
+                      )}
+                    </motion.div>
                   </div>
-                )}
+                </motion.div>
               </div>
               
               {/* Desktop Filters */}
-              <div className="hidden md:flex flex-col space-y-6">
-                <div>
-                  <h3 className="text-white font-medium mb-2">Product Type</h3>
-                  <div className="flex space-x-4">
-                    <label className="flex items-center text-gray-300">
-                      <input 
-                        type="checkbox" 
-                        className="mr-2 accent-neon-purple" 
-                        onChange={() => toggleFilter('tshirts')}
-                        checked={activeFilters.type.includes('tshirts')}
-                      />
-                      T-shirts <span className="ml-1 text-gray-500">({productCounts.tshirts})</span>
-                    </label>
-                    <label className="flex items-center text-gray-300">
-                      <input 
-                        type="checkbox" 
-                        className="mr-2 accent-neon-purple" 
-                        onChange={() => toggleFilter('hoodies')}
-                        checked={activeFilters.type.includes('hoodies')}
-                      />
-                      Hoodies <span className="ml-1 text-gray-500">({productCounts.hoodies})</span>
-                    </label>
-                    <label className="flex items-center text-gray-300">
-                      <input 
-                        type="checkbox" 
-                        className="mr-2 accent-neon-purple" 
-                        onChange={() => toggleFilter('accessories')}
-                        checked={activeFilters.type.includes('accessories')}
-                      />
-                      Accessories <span className="ml-1 text-gray-500">({productCounts.accessories})</span>
-                    </label>
-                  </div>
+              <div className="hidden md:flex items-center gap-6">
+                {/* Product Type Filters */}
+                <div className="space-x-4">
+                  {[
+                    { id: 'tshirts', label: 'T-shirts', count: productCounts.tshirts },
+                    { id: 'hoodies', label: 'Hoodies', count: productCounts.hoodies },
+                    { id: 'accessories', label: 'Accessories', count: productCounts.accessories }
+                  ].map(item => (
+                    <motion.button
+                      key={item.id}
+                      onClick={() => toggleFilter(item.id, 'type')}
+                      className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                        activeFilters.type.includes(item.id)
+                          ? 'bg-neon-purple text-black'
+                          : 'bg-gray-800/50 text-gray-300 hover:bg-gray-700/50'
+                      }`}
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                    >
+                      {item.label} ({item.count})
+                    </motion.button>
+                  ))}
                 </div>
                 
-                <div>
-                  <h3 className="text-white font-medium mb-2">Status</h3>
-                  <div className="flex space-x-4">
-                    <label className="flex items-center text-gray-300">
-                      <input 
-                        type="checkbox" 
-                        className="mr-2 accent-neon-purple" 
-                        onChange={() => toggleFilter('new')}
-                        checked={activeFilters.type.includes('new')}
-                      />
-                      New Arrivals <span className="ml-1 text-gray-500">({productCounts.new})</span>
-                    </label>
-                    <label className="flex items-center text-gray-300">
-                      <input 
-                        type="checkbox" 
-                        className="mr-2 accent-neon-purple" 
-                        onChange={() => toggleFilter('bestsellers')}
-                        checked={activeFilters.type.includes('bestsellers')}
-                      />
-                      Bestsellers <span className="ml-1 text-gray-500">({productCounts.bestsellers})</span>
-                    </label>
-                  </div>
+                {/* Status Filters */}
+                <div className="space-x-4">
+                  {[
+                    { id: 'new', label: 'New Arrivals', count: productCounts.new },
+                    { id: 'bestsellers', label: 'Bestsellers', count: productCounts.bestsellers }
+                  ].map(item => (
+                    <motion.button
+                      key={item.id}
+                      onClick={() => toggleFilter(item.id, 'status')}
+                      className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                        activeFilters.status.includes(item.id)
+                          ? 'bg-neon-purple text-black'
+                          : 'bg-gray-800/50 text-gray-300 hover:bg-gray-700/50'
+                      }`}
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                    >
+                      {item.label} ({item.count})
+                    </motion.button>
+                  ))}
                 </div>
               </div>
               
               {/* Sort Controls */}
-              <div className="w-full md:w-auto">
-                <select 
-                  className="w-full md:w-auto px-4 py-2 bg-gray-900 border border-gray-800 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-neon-purple"
-                  value={sortOrder}
-                  onChange={(e) => setSortOrder(e.target.value)}
+              <div className="w-full md:w-auto relative">
+                <motion.button 
+                  onClick={() => setSortMenuOpen(!sortMenuOpen)}
+                  className="w-full md:w-auto px-4 py-3 bg-gray-900/80 backdrop-blur-sm rounded-lg border border-neon-purple/30 text-white flex items-center justify-between shadow-lg hover:shadow-neon-purple/20 transition-all"
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
                 >
-                  <option value="random">Random</option>
-                  <option value="newest">Newest First</option>
-                  <option value="price-low">Price: Low to High</option>
-                  <option value="price-high">Price: High to Low</option>
-                </select>
+                  <span className="flex items-center">
+                    <ArrowUpDown size={16} className="text-neon-purple mr-2" />
+                    <span>{sortOrder === 'featured' ? 'Featured' : 
+                           sortOrder === 'newest' ? 'Newest First' : 
+                           sortOrder === 'price-low' ? 'Price: Low to High' : 
+                           'Price: High to Low'}</span>
+                  </span>
+                  <motion.span
+                    animate={{ rotate: sortMenuOpen ? 180 : 0 }}
+                    transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                  >
+                    <ChevronDown size={18} className="text-neon-purple ml-2" />
+                  </motion.span>
+                </motion.button>
+                
+                {/* Dropdown Menu */}
+                <AnimatePresence>
+                  {sortMenuOpen && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                      transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                      className="absolute right-0 mt-2 w-full md:w-60 bg-gray-900/95 backdrop-blur-md rounded-lg border border-neon-purple/20 shadow-xl z-50 overflow-hidden"
+                    >
+                      {[
+                        { id: 'featured', label: 'Featured' },
+                        { id: 'newest', label: 'Newest First' },
+                        { id: 'price-low', label: 'Price: Low to High' },
+                        { id: 'price-high', label: 'Price: High to Low' }
+                      ].map(option => (
+                        <motion.button
+                          key={option.id}
+                          onClick={() => {
+                            setSortOrder(option.id);
+                            setSortMenuOpen(false);
+                          }}
+                          className={`w-full px-4 py-3 text-left flex items-center ${
+                            sortOrder === option.id
+                              ? 'bg-gray-800 text-neon-purple'
+                              : 'text-white hover:bg-gray-800/50'
+                          } transition-colors`}
+                          whileHover={{ x: 4 }}
+                          whileTap={{ scale: 0.98 }}
+                        >
+                          {sortOrder === option.id && (
+                            <motion.div
+                              initial={{ scale: 0 }}
+                              animate={{ scale: 1 }}
+                              className="w-2 h-2 rounded-full bg-neon-purple mr-2"
+                            />
+                          )}
+                          <span className={sortOrder === option.id ? 'font-medium' : ''}>{option.label}</span>
+                        </motion.button>
+                      ))}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
             </div>
+
+            {/* Active Filters Display - Only on mobile or when no products shown */}
+            {(activeFilters.type.length > 0 || activeFilters.status.length > 0) && (
+              <motion.div 
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="md:hidden flex flex-wrap items-center gap-2 mt-4" // only show on mobile
+              >
+                <span className="text-gray-400 text-sm">Active filters:</span>
+                {[...activeFilters.type, ...activeFilters.status].map(filter => (
+                  <motion.span
+                    key={filter}
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    exit={{ scale: 0 }}
+                    className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-gray-800/50 text-white border border-gray-700"
+                  >
+                    {filter === 'tshirts' ? 'T-shirts' :
+                     filter === 'hoodies' ? 'Hoodies' :
+                     filter === 'accessories' ? 'Accessories' :
+                     filter === 'new' ? 'New Arrivals' :
+                     filter === 'bestsellers' ? 'Bestsellers' : filter}
+                    <motion.button
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.9 }}
+                      onClick={() => toggleFilter(filter, filter === 'new' || filter === 'bestsellers' ? 'status' : 'type')}
+                      className="ml-2 text-gray-400 hover:text-white"
+                    >
+                      ×
+                    </motion.button>
+                  </motion.span>
+                ))}
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={() => {
+                    setActiveFilters({
+                      type: [],
+                      status: []
+                    });
+                    navigate('/shop', { replace: true });
+                  }}
+                  className="text-neon-purple hover:text-neon-purple/80 text-sm font-medium"
+                >
+                  Clear all
+                </motion.button>
+              </motion.div>
+            )}
           </div>
         </section>
         
@@ -403,7 +580,7 @@ const ShopPage = () => {
                   onClick={() => {
                     setActiveFilters({
                       type: [],
-                      collection: []
+                      status: []
                     });
                     navigate('/shop', { replace: true });
                   }} 
@@ -420,9 +597,9 @@ const ShopPage = () => {
                     Showing {filteredProducts.length} product{filteredProducts.length !== 1 && 's'}
                   </div>
                   
-                  {activeFilters.type.length > 0 && (
+                  {(activeFilters.type.length > 0 || activeFilters.status.length > 0) && (
                     <div className="flex flex-wrap gap-2">
-                      {activeFilters.type.map(filter => (
+                      {[...activeFilters.type, ...activeFilters.status].map(filter => (
                         <div 
                           key={filter}
                           className="flex items-center px-3 py-1 bg-gray-800 rounded-full text-sm text-white"
@@ -433,7 +610,7 @@ const ShopPage = () => {
                            filter === 'new' ? 'New Arrivals' :
                            filter === 'bestsellers' ? 'Bestsellers' : filter}
                           <button 
-                            onClick={() => toggleFilter(filter)}
+                            onClick={() => toggleFilter(filter, filter === 'new' || filter === 'bestsellers' ? 'status' : 'type')}
                             className="ml-2 text-gray-400 hover:text-white"
                           >
                             ×
@@ -444,7 +621,7 @@ const ShopPage = () => {
                         onClick={() => {
                           setActiveFilters({
                             type: [],
-                            collection: []
+                            status: []
                           });
                           navigate('/shop', { replace: true });
                         }}
