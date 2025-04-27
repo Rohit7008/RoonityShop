@@ -1,46 +1,26 @@
 import { useState, useEffect } from 'react';
-import { motion, useScroll, AnimatePresence } from 'framer-motion';
-import { ChevronDown, User, Menu, X } from 'lucide-react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { useScrollToTop } from '@/hooks/useScrollToTop';
+import { motion } from 'framer-motion';
+import { Link, useLocation } from 'react-router-dom';
+import { Menu, X, ShoppingCart } from 'lucide-react';
+import { useCart } from '@/contexts/CartContext';
+import CartSidebar from '@/components/cart/CartSidebar';
+import { UserButton } from '@/components/auth/UserButton';
 import { useIsMobile } from '@/hooks/useIsMobile';
+import { SignedIn } from '@clerk/clerk-react';
 
 const Navbar = () => {
   const [isShopOpen, setIsShopOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [prevScrollPos, setPrevScrollPos] = useState(0);
   const [visible, setVisible] = useState(true);
-  const { scrollY } = useScroll();
-  const navigate = useNavigate();
+  const { toggleCart, totalItems } = useCart();
   const location = useLocation();
   const isMobile = useIsMobile();
-  useScrollToTop();
-
-  // Close mobile menu when route changes
-  useEffect(() => {
-    setIsMobileMenuOpen(false);
-  }, [location.pathname]);
-
-  // Prevent body scroll when mobile menu is open
-  useEffect(() => {
-    if (isMobileMenuOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'auto';
-    }
-    
-    return () => {
-      document.body.style.overflow = 'auto';
-    };
-  }, [isMobileMenuOpen]);
 
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollPos = window.scrollY;
-      const isScrollingDown = prevScrollPos < currentScrollPos;
-      const isAboveThreshold = currentScrollPos < window.innerHeight;
-
-      setVisible(!isScrollingDown || isAboveThreshold);
+      setVisible(prevScrollPos > currentScrollPos || currentScrollPos < 10);
       setPrevScrollPos(currentScrollPos);
     };
 
@@ -48,17 +28,10 @@ const Navbar = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, [prevScrollPos]);
 
-  const handleNavLinkClick = (path: string, id?: string) => {
+  // Close mobile menu when route changes
+  useEffect(() => {
     setIsMobileMenuOpen(false);
-    if (id) {
-      navigate(path);
-      setTimeout(() => {
-        document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
-      }, 100);
-    } else {
-      navigate(path);
-    }
-  };
+  }, [location.pathname]);
 
   return (
     <motion.nav
@@ -69,217 +42,103 @@ const Navbar = () => {
     >
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-20">
-          {/* Hamburger Menu Button (Mobile Only) */}
-          {isMobile ? (
-            <button
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="p-2 text-white hover:text-neon-purple transition-colors"
-              aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
-            >
-              <AnimatePresence mode="wait">
-                {isMobileMenuOpen ? (
-                  <motion.div
-                    key="close"
-                    initial={{ rotate: -90, opacity: 0 }}
-                    animate={{ rotate: 0, opacity: 1 }}
-                    exit={{ rotate: 90, opacity: 0 }}
-                    transition={{ duration: 0.2 }}
-                  >
-                    <X className="w-6 h-6" />
-                  </motion.div>
-                ) : (
-                  <motion.div
-                    key="menu"
-                    initial={{ rotate: 90, opacity: 0 }}
-                    animate={{ rotate: 0, opacity: 1 }}
-                    exit={{ rotate: -90, opacity: 0 }}
-                    transition={{ duration: 0.2 }}
-                  >
-                    <Menu className="w-6 h-6" />
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </button>
-          ) : (
-            <div className="w-8"></div>
-          )}
-
-          {/* Main Navigation - Desktop */}
-          {!isMobile && (
-            <div className="flex items-center space-x-8">
-              <Link 
-                to="/" 
-                className="nav-link"
-              >
-                Home
-              </Link>
-
-              {/* Shop Dropdown */}
-              <div className="relative group">
-                <Link 
-                  to="/shop" 
-                  className="nav-link flex items-center gap-1"
-                  onMouseEnter={() => setIsShopOpen(true)}
-                  onMouseLeave={() => setIsShopOpen(false)}
-                >
-                  Shop
-                  <ChevronDown className="w-4 h-4" />
-                </Link>
-                
-                {/* Dropdown Menu */}
-                <div 
-                  className={`absolute top-full -left-4 mt-2 w-48 bg-black/90 backdrop-blur-lg border border-gray-800 rounded-lg shadow-xl transform transition-all duration-200 ${
-                    isShopOpen ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2 pointer-events-none'
-                  }`}
-                  onMouseEnter={() => setIsShopOpen(true)}
-                  onMouseLeave={() => setIsShopOpen(false)}
-                >
-                  <div className="py-2 px-4">
-                    <Link to="/shop" className="dropdown-link">
-                      All Products
-                    </Link>
-                    <Link to="/shop?type=tshirts" className="dropdown-link">
-                      T-shirts
-                    </Link>
-                    <Link to="/shop?type=hoodies" className="dropdown-link">
-                      Hoodies
-                    </Link>
-                    <Link to="/shop?type=accessories" className="dropdown-link">
-                      Accessories
-                    </Link>
-                  </div>
-                </div>
-              </div>
-
-              <Link to="/collections" className="nav-link">
-                Collections
-              </Link>
-              <Link 
-                to="/#about" 
-                className="nav-link"
-                onClick={(e) => {
-                  e.preventDefault();
-                  handleNavLinkClick('/', 'about');
-                }}
-              >
-                About
-              </Link>
-              <Link to="/contact" className="nav-link">
-                Contact
-              </Link>
+          {/* Logo */}
+          <Link to="/" className="flex items-center">
+            <div className="w-12 h-12 rounded-lg overflow-hidden hover:shadow-[0_0_15px_rgba(147,51,234,0.3)] transition-shadow duration-300">
+              <img 
+                src="/mockups/mockup-1.png" 
+                alt="ROONITY Logo" 
+                className="w-full h-full object-cover"
+              />
             </div>
-          )}
+          </Link>
 
-          {/* Account Icon */}
-          <div className="flex items-center">
-            <a 
-              href="/account" 
-              className="p-2 rounded-full hover:bg-white/5 transition-colors group"
-              title="Account"
+          {/* Desktop Navigation */}
+          <nav className="hidden md:flex items-center space-x-8">
+            <Link to="/" className="text-white hover:text-neon-purple transition-colors">Home</Link>
+            <Link to="/shop" className="text-white hover:text-neon-purple transition-colors">Shop</Link>
+            <Link to="/collections" className="text-white hover:text-neon-purple transition-colors">Collections</Link>
+            <Link to="/about" className="text-white hover:text-neon-purple transition-colors">About</Link>
+            <Link to="/contact" className="text-white hover:text-neon-purple transition-colors">Contact</Link>
+          </nav>
+
+          {/* Right Actions */}
+          <div className="flex items-center space-x-4">
+            {/* User Button */}
+            <UserButton />
+
+            {/* Cart - Only shown when user is signed in */}
+            <SignedIn>
+              <button 
+                onClick={toggleCart} 
+                className="p-2 rounded-full hover:bg-white/5 transition-colors group"
+              >
+                <ShoppingCart className="w-6 h-6 text-gray-400 group-hover:text-neon-purple transition-colors" />
+                {totalItems > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-neon-purple text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                    {totalItems}
+                  </span>
+                )}
+              </button>
+            </SignedIn>
+
+            {/* Mobile Menu Toggle */}
+            <button 
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} 
+              className="p-2 md:hidden"
             >
-              <User className="w-6 h-6 text-gray-400 group-hover:text-neon-purple transition-colors" />
-            </a>
+              <Menu size={24} className={isMobileMenuOpen ? 'hidden' : 'block'} />
+              <X size={24} className={isMobileMenuOpen ? 'block' : 'hidden'} />
+            </button>
           </div>
         </div>
       </div>
 
-      {/* Mobile Menu Overlay */}
-      <AnimatePresence>
-        {isMobileMenuOpen && isMobile && (
+      {/* Mobile Menu */}
+      {isMobileMenuOpen && (
           <motion.div 
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.3 }}
-            className="fixed inset-0 top-20 bg-black/95 backdrop-blur-lg z-40 flex flex-col"
-          >
-            <div className="flex flex-col p-6 space-y-6">
+          initial={{ opacity: 0, height: 0 }}
+          animate={{ opacity: 1, height: 'auto' }}
+          exit={{ opacity: 0, height: 0 }}
+          className="md:hidden bg-black border-t border-gray-800"
+        >
+          <div className="container mx-auto py-4 space-y-4">
               <Link 
                 to="/" 
-                className="text-2xl font-bold text-white hover:text-neon-purple transition-colors py-2 border-b border-gray-800"
-                onClick={() => setIsMobileMenuOpen(false)}
+              className="block py-2 text-white hover:text-neon-purple transition-colors"
               >
                 Home
               </Link>
-              
-              <div className="space-y-4 py-2 border-b border-gray-800">
                 <Link 
                   to="/shop" 
-                  className="text-2xl font-bold text-white hover:text-neon-purple transition-colors block"
-                  onClick={() => setIsMobileMenuOpen(false)}
+              className="block py-2 text-white hover:text-neon-purple transition-colors"
                 >
                   Shop
                 </Link>
-                <div className="pl-4 space-y-3">
-                  <Link 
-                    to="/shop" 
-                    className="text-lg text-gray-300 hover:text-neon-purple transition-colors block"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    All Products
-                  </Link>
-                  <Link 
-                    to="/shop?type=tshirts" 
-                    className="text-lg text-gray-300 hover:text-neon-purple transition-colors block"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    T-shirts
-                  </Link>
-                  <Link 
-                    to="/shop?type=hoodies" 
-                    className="text-lg text-gray-300 hover:text-neon-purple transition-colors block"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    Hoodies
-                  </Link>
-                  <Link 
-                    to="/shop?type=accessories" 
-                    className="text-lg text-gray-300 hover:text-neon-purple transition-colors block"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    Accessories
-                  </Link>
-                </div>
-              </div>
-              
               <Link 
                 to="/collections" 
-                className="text-2xl font-bold text-white hover:text-neon-purple transition-colors py-2 border-b border-gray-800"
-                onClick={() => setIsMobileMenuOpen(false)}
+              className="block py-2 text-white hover:text-neon-purple transition-colors"
               >
                 Collections
               </Link>
-              
               <Link 
-                to="/#about" 
-                className="text-2xl font-bold text-white hover:text-neon-purple transition-colors py-2 border-b border-gray-800"
-                onClick={(e) => {
-                  e.preventDefault();
-                  handleNavLinkClick('/', 'about');
-                }}
+              to="/about" 
+              className="block py-2 text-white hover:text-neon-purple transition-colors"
               >
                 About
               </Link>
-              
               <Link 
                 to="/contact" 
-                className="text-2xl font-bold text-white hover:text-neon-purple transition-colors py-2 border-b border-gray-800"
-                onClick={() => setIsMobileMenuOpen(false)}
+              className="block py-2 text-white hover:text-neon-purple transition-colors"
               >
                 Contact
-              </Link>
-              
-              <Link 
-                to="/account" 
-                className="text-2xl font-bold text-white hover:text-neon-purple transition-colors py-2 border-b border-gray-800"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                Account
               </Link>
             </div>
           </motion.div>
         )}
-      </AnimatePresence>
+
+      {/* Cart Sidebar */}
+      <CartSidebar />
     </motion.nav>
   );
 };
