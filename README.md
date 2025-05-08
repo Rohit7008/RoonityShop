@@ -29,7 +29,7 @@ Your Premium Destination for Modern Fashion
 - **3D Graphics**: Three.js with React Three Fiber
 - **Animations**: Framer Motion
 - **State Management**: React Query
-- **Backend & Auth**: Appwrite
+- **Backend & Auth**: Supabase
 - **Form Handling**: React Hook Form + Zod
 - **Routing**: React Router DOM
 
@@ -104,7 +104,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 👨‍💻 Author
 
-**Rohit Kumar**
+**Rohit**
 - GitHub: [@Rohit7008](https://github.com/Rohit7008)
 
 ---
